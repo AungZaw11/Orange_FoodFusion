@@ -3,17 +3,17 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 include 'auth.php';
+$pageTitle = 'Download History';
 
-$pageTitle = 'Dashboard';
-
-// Fetch stats
-$stats = [
-    'total_users' => $db->query("SELECT COUNT(*) FROM users")->fetchColumn(),
-    'total_recipes' => $db->query("SELECT COUNT(*) FROM recipes")->fetchColumn(),
-    'total_featured' => $db->query("SELECT COUNT(*) FROM recipes WHERE is_featured = 1")->fetchColumn(),
-    'total_contacts' => $db->query("SELECT COUNT(*) FROM contact_messages")->fetchColumn(),
-    'unread_contacts' => $db->query("SELECT COUNT(*) FROM contact_messages WHERE is_read = 0")->fetchColumn(),
-];
+// Fetch all downloads with user info
+$stmt = $db->prepare("
+    SELECT rd.*, u.first_name, u.last_name, u.email
+    FROM resource_downloads rd
+    JOIN users u ON rd.user_id = u.id
+    ORDER BY rd.last_downloaded DESC
+");
+$stmt->execute();
+$downloads = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -78,7 +78,7 @@ $stats = [
         }
 
         .nav-links a:hover,
-        .nav-links a[href="<?= basename($_SERVER['PHP_SELF']) ?>"] {
+        .nav-links a.active {
             background: var(--primary-orange);
             color: white;
         }
@@ -119,31 +119,124 @@ $stats = [
             cursor: pointer;
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
+        .page-content {
             background: var(--card-bg);
             padding: 20px;
             border-radius: 8px;
             box-shadow: var(--shadow);
-            text-align: center;
         }
 
-        .stat-card h3 {
+        /* Search Box */
+        .search-box {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-box input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            max-width: 300px;
+            flex: 1;
+        }
+
+        .search-box button {
+            background: var(--primary-orange);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Desktop Table */
+        .download-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: var(--shadow);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .download-table th,
+        .download-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .download-table th {
+            background: #fafafa;
             color: var(--primary-orange);
-            margin-bottom: 10px;
-            font-size: 1rem;
         }
 
-        .stat-card .value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #2c3e50;
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .actions a {
+            margin-right: 10px;
+            color: var(--primary-orange);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .actions a.delete {
+            color: #e74c3c;
+        }
+
+        .alert {
+            padding: 10px;
+            background: #d4edda;
+            color: #155724;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        /* Mobile Card View */
+        .download-card {
+            display: none;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 15px;
+            border: 1px solid #eee;
+        }
+
+        .download-card h4 {
+            margin: 0 0 10px 0;
+            color: var(--primary-orange);
+        }
+
+        .download-card p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .download-card .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
         }
 
         /* Mobile Toggle Button */
@@ -164,14 +257,6 @@ $stats = [
 
         .mobile-toggle i {
             font-size: 1.2rem;
-        }
-
-        /* Recent Activity */
-        .recent-activity {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: var(--shadow);
         }
 
         /* ===== MOBILE RESPONSIVE ===== */
@@ -204,23 +289,41 @@ $stats = [
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 15px;
-                padding-top: 60px; /* Make room for toggle */
+                padding-top: 60px;
             }
 
             .header h1 {
                 font-size: 1.3rem;
             }
 
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stat-card .value {
-                font-size: 1.5rem;
-            }
-
             .logout-btn {
                 align-self: flex-end;
+            }
+
+            .download-table {
+                display: none;
+            }
+
+            .download-card {
+                display: block;
+            }
+
+            .download-card .user-info {
+                display: block;
+            }
+
+            .download-card .user-avatar {
+                width: 25px;
+                height: 25px;
+                font-size: 0.7rem;
+            }
+
+            .download-card p {
+                font-size: 0.85rem;
+            }
+
+            .download-card .actions a {
+                font-size: 0.85rem;
             }
         }
 
@@ -233,12 +336,8 @@ $stats = [
                 padding: 15px;
             }
 
-            .stat-card {
+            .page-content {
                 padding: 15px;
-            }
-
-            .stat-card .value {
-                font-size: 1.3rem;
             }
 
             .sidebar-header {
@@ -276,41 +375,86 @@ $stats = [
         <li><a href="cookbook.php"><i class="fas fa-book"></i> Cookbook</a></li>
         <li><a href="community.php"><i class="fas fa-comments"></i> Community</a></li>
         <li><a href="contact-messages.php"><i class="fas fa-envelope"></i> Contact Us</a></li>
-        <li><a href="download.php"><i class="fas fa-download"></i> Download</a></li>
+        <li><a href="download-list.php" class="active"><i class="fas fa-file-csv"></i> Download Lists</a></li>
+        <li><a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
     </ul>
 </div>
 
 <!-- Main Content -->
 <div class="main-content" id="mainContent">
     <div class="header">
-        <h1>Dashboard</h1>
+        <h1><?= htmlspecialchars($pageTitle) ?></h1>
         <form method="POST" action="../logout.php" style="display:inline;">
             <button type="submit" class="logout-btn">Logout</button>
         </form>
     </div>
 
-    <div class="stats-grid">
-        <div class="stat-card">
-            <h3>Total Users</h3>
-            <div class="value"><?= $stats['total_users'] ?></div>
+    <div class="page-content">
+        <div class="search-box">
+            <form method="GET">
+                <input type="text" name="search" placeholder="Search by user or resource..." 
+                       value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
+                <button type="submit">Search</button>
+            </form>
         </div>
-        <div class="stat-card">
-            <h3>Total Recipes</h3>
-            <div class="value"><?= $stats['total_recipes'] ?></div>
-        </div>
-        <div class="stat-card">
-            <h3>Featured Recipes</h3>
-            <div class="value"><?= $stats['total_featured'] ?></div>
-        </div>
-        <div class="stat-card">
-            <h3>Unread Messages</h3>
-            <div class="value"><?= $stats['unread_contacts'] ?>/<?= $stats['total_contacts'] ?></div>
-        </div>
-    </div>
 
-    <div class="recent-activity">
-        <h3>Recent Activity</h3>
-        <p>Latest community posts, reviews, and submissions appear here (optional enhancement).</p>
+        <!-- Desktop Table -->
+        <table class="download-table">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Resource</th>
+                    <th>Downloads</th>
+                    <th>Last Downloaded</th>
+                    <th>IP Address</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($downloads as $d): ?>
+                <tr>
+                    <td class="user-info">
+                        <div class="user-avatar">
+                            <?= strtoupper(substr($d['first_name'], 0, 1) . substr($d['last_name'], 0, 1)) ?>
+                        </div>
+                        <div>
+                            <strong><?= htmlspecialchars($d['first_name'] . ' ' . $d['last_name']) ?></strong><br>
+                            <small><?= htmlspecialchars($d['email']) ?></small>
+                        </div>
+                    </td>
+                    <td><?= htmlspecialchars($d['resource_name']) ?></td>
+                    <td><?= $d['download_count'] ?></td>
+                    <td><?= date('M j, Y g:i A', strtotime($d['last_downloaded'])) ?></td>
+                    <td><?= htmlspecialchars($d['ip_address']) ?></td>
+                    <td class="actions">
+                        <a href="#" onclick="confirmDelete(<?= $d['id'] ?>)" class="delete">Delete</a>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <!-- Mobile Card View -->
+        <?php foreach ($downloads as $d): ?>
+        <div class="download-card">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <?= strtoupper(substr($d['first_name'], 0, 1) . substr($d['last_name'], 0, 1)) ?>
+                </div>
+                <div>
+                    <strong><?= htmlspecialchars($d['first_name'] . ' ' . $d['last_name']) ?></strong><br>
+                    <small><?= htmlspecialchars($d['email']) ?></small>
+                </div>
+            </div>
+            <p><strong>Resource:</strong> <?= htmlspecialchars($d['resource_name']) ?></p>
+            <p><strong>Downloads:</strong> <?= $d['download_count'] ?></p>
+            <p><strong>Last Downloaded:</strong> <?= date('M j, Y g:i A', strtotime($d['last_downloaded'])) ?></p>
+            <p><strong>IP:</strong> <?= htmlspecialchars($d['ip_address']) ?></p>
+            <div class="actions">
+                <a href="#" onclick="confirmDelete(<?= $d['id'] ?>)" class="delete">Delete</a>
+            </div>
+        </div>
+        <?php endforeach; ?>
     </div>
 </div>
 
@@ -350,6 +494,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+function confirmDelete(id) {
+    if (confirm('Are you sure you want to delete this download record?')) {
+        // You can add AJAX here for deletion
+        alert('Record deleted!');
+        // location.reload(); // Uncomment to refresh after deletion
+    }
+}
 </script>
 
 </body>

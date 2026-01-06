@@ -66,7 +66,7 @@ include 'includes/header.php';
                                 <span><i class="fas fa-file-pdf"></i> PDF • 2MB</span>
                                 <span><i class="fas fa-download"></i> 1.2k Downloads</span>
                             </div>
-                            <a href="downloads/meal-planner.pdf" class="download-btn" download>
+                            <a href="download.php?file=Weekly Meal Planner.pdf" class="download-btn">
                                 <i class="fas fa-download"></i> Download
                             </a>
                         </div>
@@ -83,7 +83,7 @@ include 'includes/header.php';
                                 <span><i class="fas fa-file-pdf"></i> PDF • 1.5MB</span>
                                 <span><i class="fas fa-download"></i> 890 Downloads</span>
                             </div>
-                            <a href="downloads/recipe-card-template.pdf" class="download-btn" download>
+                            <a href="download.php?file=Recipe Card Template.pdf" class="download-btn">
                                 <i class="fas fa-download"></i> Download
                             </a>
                         </div>
@@ -100,7 +100,7 @@ include 'includes/header.php';
                                 <span><i class="fas fa-file-pdf"></i> PDF • 1.8MB</span>
                                 <span><i class="fas fa-download"></i> 1.5k Downloads</span>
                             </div>
-                            <a href="downloads/grocery-list.pdf" class="download-btn" download>
+                            <a href="download.php?file=Grocery Shopping List.pdf" class="download-btn">
                                 <i class="fas fa-download"></i> Download
                             </a>
                         </div>
@@ -203,7 +203,7 @@ include 'includes/header.php';
                             <li><i class="fas fa-check-circle"></i> Storage tips</li>
                             <li><i class="fas fa-check-circle"></i> Recipe suggestions</li>
                         </ul>
-                        <a href="guides/seasonal-cooking.pdf" class="guide-action" download>
+                        <a href="download.php?file=Seasonal Produce Guide.pdf" class="guide-action">
                             <i class="fas fa-download"></i> Download Guide
                         </a>
                     </div>
@@ -219,7 +219,7 @@ include 'includes/header.php';
                             <li><i class="fas fa-check-circle"></i> Seafood guide</li>
                             <li><i class="fas fa-check-circle"></i> Safety standards</li>
                         </ul>
-                        <a href="guides/cooking-temperatures.pdf" class="guide-action" download>
+                        <a href="download.php?file=Cooking Temperature Guide.pdf" class="guide-action">
                             <i class="fas fa-download"></i> Download Guide
                         </a>
                     </div>
@@ -235,7 +235,7 @@ include 'includes/header.php';
                             <li><i class="fas fa-check-circle"></i> Weight equivalents</li>
                             <li><i class="fas fa-check-circle"></i> Temperature charts</li>
                         </ul>
-                        <a href="guides/measurement-conversion.pdf" class="guide-action" download>
+                        <a href="download.php?file=Measurement Conversion.pdf" class="guide-action">
                             <i class="fas fa-download"></i> Download Guide
                         </a>
                     </div>

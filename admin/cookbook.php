@@ -252,7 +252,8 @@ $recipes = $db->query("
         <li><a href="cookbook.php"><i class="fas fa-book"></i> Cookbook</a></li>
         <li><a href="community.php"><i class="fas fa-comments"></i> Community</a></li>
         <li><a href="contact-messages.php"><i class="fas fa-envelope"></i> Contact Us</a></li>
-        <li><a href="download.php"><i class="fas fa-download"></i> Download</a></li>
+        <li><a href="download.list.php"><i class="fas fa-download"></i> Download Lists</a></li>
+        <li><a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
     </ul>
 </div>
 <div class="main-content">

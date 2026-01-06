@@ -6,7 +6,8 @@ $pageTitle = 'User Management';
 // Handle delete
 if (isset($_GET['delete'])) {
     $delete_id = (int)$_GET['delete'];
-    if ($delete_id !== $_SESSION['admin_id']) {
+    // Use $_SESSION['user_id'] instead of $_SESSION['admin_id']
+    if ($delete_id !== $_SESSION['user_id']) {
         $db->prepare("DELETE FROM users WHERE id = ? AND is_admin = 0")->execute([$delete_id]);
     }
     header("Location: users.php?deleted=1");
@@ -161,7 +162,6 @@ $users = $stmt->fetchAll();
             display: flex;
             gap: 20px;
             flex-wrap: wrap;
-           
         }
 
         .search-box input {
@@ -180,7 +180,7 @@ $users = $stmt->fetchAll();
             padding: 8px 12px;
             border-radius: 4px;
             cursor: pointer;
-             margin-top: 10px;
+            margin-top: 10px;
         }
 
         /* Table */
@@ -285,14 +285,16 @@ $users = $stmt->fetchAll();
     <div class="sidebar-header">Orange Admin</div>
     <ul class="nav-links">
         <li><a href="index.php"><i class="fas fa-home"></i> Dashboard</a></li>
-        <li><a href="users.php"><i class="fas fa-users"></i> Users</a></li>
+        <li><a href="users.php" class="active"><i class="fas fa-users"></i> Users</a></li>
         <li><a href="manage-recipes.php"><i class="fas fa-edit"></i> Manage Recipes</a></li>
         <li><a href="cookbook.php"><i class="fas fa-book"></i> Cookbook</a></li>
         <li><a href="community.php"><i class="fas fa-comments"></i> Community</a></li>
         <li><a href="contact-messages.php"><i class="fas fa-envelope"></i> Contact Us</a></li>
-        <li><a href="download.php"><i class="fas fa-download"></i> Download</a></li>
+        <li><a href="download-list.php"><i class="fas fa-download"></i> Download Lists</a></li>
+        <li><a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
     </ul>
 </div>
+
 <!-- Main Content -->
 <div class="main-content">
     <div class="header">
@@ -333,7 +335,7 @@ $users = $stmt->fetchAll();
                     <td><?= date('M j, Y', strtotime($u['created_at'])) ?></td>
                     <td><?= $u['is_admin'] ? 'Admin' : 'User' ?></td>
                     <td class="actions">
-                        <?php if (!$u['is_admin'] && $u['id'] !== $_SESSION['admin_id']): ?>
+                        <?php if (!$u['is_admin'] && $u['id'] !== $_SESSION['user_id']): ?>
                             <a href="?delete=<?= $u['id'] ?>" class="delete" onclick="return confirm('Delete this user? All their recipes and data will be removed.')">Delete</a>
                         <?php endif; ?>
                     </td>

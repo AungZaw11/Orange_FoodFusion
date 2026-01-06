@@ -52,7 +52,7 @@ try {
                     
                     <?php if (!empty($recipe['difficulty_level'])): ?>
                         <span class="difficulty <?php echo strtolower($recipe['difficulty_level']); ?>">
-                            <?php echo $recipe['difficulty_level']; ?>
+                            <?php echo htmlspecialchars($recipe['difficulty_level']); ?>
                         </span>
                     <?php endif; ?>
                 </div>
@@ -68,8 +68,8 @@ try {
                     </p>
                     
                     <div class="recipe-meta">
-                        <span><i class="fas fa-clock"></i> <?php echo $recipe['cooking_time'] ?? '30'; ?> min</span>
-                        <span><i class="fas fa-users"></i> <?php echo $recipe['servings'] ?? '4'; ?> servings</span>
+                        <span><i class="fas fa-clock"></i> <?php echo (int)($recipe['cooking_time'] ?? 30); ?> min</span>
+                        <span><i class="fas fa-users"></i> <?php echo (int)($recipe['servings'] ?? 4); ?> servings</span>
                     </div>
                     
                     <div class="recipe-author">
@@ -77,9 +77,9 @@ try {
                         <?php echo htmlspecialchars($recipe['first_name'] ?? 'Chef'); ?>
                     </div>
                     
-                    <!-- <a href="recipe-detail.php?id=<?php echo $recipe['id']; ?>" class="view-recipe-btn">
+                    <a href="recipe-detail.php?id=<?php echo (int)$recipe['id']; ?>" class="view-recipe-btn">
                         View Recipe <i class="fas fa-arrow-right"></i>
-                    </a> -->
+                    </a>
                 </div>
             </div>
             <?php endforeach; ?>

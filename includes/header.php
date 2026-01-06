@@ -68,11 +68,17 @@ $page_title = $page_title ?? 'Orange - Food Community';
             color: var(--orange-dark);
         }
 
+        /* Navigation container for mobile */
+        .nav-right {
+            display: flex;
+            align-items: center;
+        }
+
         .nav-links {
             display: flex;
             list-style: none;
             align-items: center;
-            gap: 2rem;
+            gap: 0.5rem;
         }
 
         .nav-links a {
@@ -116,20 +122,28 @@ $page_title = $page_title ?? 'Orange - Food Community';
             display: none;
             flex-direction: column;
             cursor: pointer;
+            z-index: 1001;
         }
 
         .hamburger span {
             width: 25px;
             height: 3px;
             background: #333;
-            margin: 2px 0;
+            margin: 3px 0;
             transition: 0.3s;
+            transform-origin: center;
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
             .hamburger {
                 display: flex;
+            }
+            
+            .nav-right {
+                position: relative;
+                width: 100%;
+                justify-content: space-between;
             }
             
             .nav-links {
@@ -139,12 +153,36 @@ $page_title = $page_title ?? 'Orange - Food Community';
                 width: 100%;
                 flex-direction: column;
                 background: white;
-                padding: 2rem;
+                padding: 2rem 1rem;
                 transition: 0.3s;
+                z-index: 999;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
             }
             
             .nav-links.active {
                 left: 0;
+            }
+            
+            .nav-links li {
+                margin: 10px 0;
+            }
+            
+            .btn-login, .btn-register {
+                width: 100%;
+                text-align: center;
+            }
+            
+            /* Hamburger animation */
+            .hamburger.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+            
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+            
+            .hamburger.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(5px, -5px);
             }
         }
     </style>
@@ -157,38 +195,39 @@ $page_title = $page_title ?? 'Orange - Food Community';
                 <span>Orange</span>
             </a>
             
-            <ul class="nav-links" id="navLinks">
-                <li><a href="index.php">Home</a></li>
-                <li><a href="about.php">About</a></li>
-                <li><a href="recipes.php">Recipes</a></li>
-                <li><a href="cookbook.php">Community</a></li>
-                <li><a href="contact.php">Contact</a></li>
-                <li><a href="resource.php">Resources</a></li>
-                <li><a href="educational.php">Educational</a></li>
+            <div class="nav-right">
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="index.php">Home</a></li>
+                    <li><a href="about.php">About</a></li>
+                    <li><a href="recipes.php">Recipes</a></li>
+                    <li><a href="cookbook.php">Community</a></li>
+                    <li><a href="contact.php">Contact</a></li>
+                    <li><a href="resource.php">Resources</a></li>
+                    <li><a href="educational.php">Educational</a></li>
+                    
+                    <?php if(isset($_SESSION['user_id'])): ?>
+                        <li class="user-menu">
+                            <a href="profile.php">
+                                <i class="fas fa-user"></i>
+                                <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Profile'); ?>
+                            </a>
+                        </li>
+                    <?php else: ?>
+                        <li><a href="login.php" class="btn-login">Login</a></li>
+                        <li><a href="register.php" class="btn-register">Register</a></li>
+                    <?php endif; ?>
+                </ul>
                 
-                <?php if(isset($_SESSION['user_id'])): ?>
-                    <li class="user-menu">
-                        <a href="profile.php">
-                            <i class="fas fa-user"></i>
-                            <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Profile'); ?>
-                        </a>
-                    </li>
-                <?php else: ?>
-                    <li><a href="login.php" class="btn-login">Login</a></li>
-                    <li><a href="register.php" class="btn-register">Register</a></li>
-                <?php endif; ?>
-            </ul>
-            
-            <div class="hamburger" id="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
             </div>
         </nav>
     </header>
 
     <script>
-    // Simple JavaScript without interfering with links
     document.addEventListener('DOMContentLoaded', function() {
         const hamburger = document.getElementById('hamburger');
         const navLinks = document.getElementById('navLinks');
@@ -196,15 +235,30 @@ $page_title = $page_title ?? 'Orange - Food Community';
         if (hamburger && navLinks) {
             hamburger.addEventListener('click', function() {
                 navLinks.classList.toggle('active');
+                hamburger.classList.toggle('active');
             });
         }
         
-        // Make sure all links work
-        document.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', function(e) {
-                // Allow all links to work normally
-                return true;
+        // Close menu when clicking a link on mobile
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    navLinks.classList.remove('active');
+                    hamburger.classList.remove('active');
+                }
             });
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768) {
+                if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
+                    navLinks.classList.remove('active');
+                    hamburger.classList.remove('active');
+                }
+            }
         });
     });
     </script>
+</body>
+</html>
