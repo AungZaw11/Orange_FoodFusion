@@ -150,6 +150,7 @@ $downloads = $stmt->fetchAll(PDO::FETCH_ASSOC);
             padding: 8px 12px;
             border-radius: 4px;
             cursor: pointer;
+            margin-top:10px;
         }
 
         /* Desktop Table */

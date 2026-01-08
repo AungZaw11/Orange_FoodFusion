@@ -20,9 +20,9 @@ alt="Delicious Food">
 <a href="recipes.php" class="btn btn-explore">
 <i class="fas fa-utensils"></i> Explore Recipes
 </a>
-<a href="./register.php" class="btn btn-join">
+<button class="btn btn-join" onclick="openModal()">
 <i class="fas fa-user-plus"></i> Join Free
-</a>
+</button>
 </div>
 </div>
 </div>
@@ -57,24 +57,63 @@ alt="Healthy Food">
 </div>
 </div>
 </section>
+
+<!-- Modal Popup -->
+<div id="registerModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Join Orange Community</h2>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" name="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                </div>
+                <button type="submit" class="btn btn-register">Create Account</button>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <p>Already have an account? <a href="login.php">Sign in</a></p>
+        </div>
+    </div>
+</div>
+
 <!-- Stats Section -->
 <section class="stats-section">
 <div class="container">
 <div class="stats-grid">
 <div class="stat-item">
-<div class="stat-number">50+</div>
+<div class="stat-number">5000+</div>
 <div class="stat-label">Recipes</div>
 </div>
 <div class="stat-item">
-<div class="stat-number">30+</div>
+<div class="stat-number">3000+</div>
 <div class="stat-label">Community Members</div>
 </div>
 <div class="stat-item">
-<div class="stat-number">20+</div>
+<div class="stat-number">2000+</div>
 <div class="stat-label">Active Discussions</div>
 </div>
 <div class="stat-item">
-<div class="stat-number">450+</div>
+<div class="stat-number">4500+</div>
 <div class="stat-label">Cook Tips</div>
 </div>
 </div>
@@ -383,10 +422,10 @@ View All Recipes
 Browse Recipes
 </a>
 <?php if (!isset($_SESSION['user_id'])): ?>
-<a href="register.php" class="btn btn-outline-light">
+<button class="btn btn-outline-light" onclick="openModal()">
 <i class="fas fa-user-plus"></i>
 Create Free Account
-</a>
+</button>
 <?php else: ?>
 <a href="add-recipe.php" class="btn btn-outline-light">
 <i class="fas fa-plus"></i>
@@ -428,6 +467,155 @@ Share Your Recipe
 --border-radius-lg: 20px;
 --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    animation: fadeIn 0.3s ease;
+    overflow-y: auto;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 0; /* Remove margin */
+    padding: 0;
+    border-radius: var(--border-radius-lg);
+    width: 100%; /* Full width */
+    max-width: 500px;
+    box-shadow: var(--shadow-xl);
+    position: relative;
+    animation: slideIn 0.3s ease;
+    max-height: 90vh;
+    overflow-y: auto;
+    /* Center horizontally on desktop */
+    margin: 0 auto;
+    /* On mobile, use 95% width */
+}
+
+.modal-header {
+    padding: 20px 25px;
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, var(--primary-orange), var(--orange-light));
+    color: white;
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.close {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.close:hover {
+    color: #f8f9fa;
+    transform: scale(1.1);
+}
+
+.modal-body {
+    padding: 25px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid var(--gray-300);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: var(--transition);
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-orange);
+    box-shadow: 0 0 0 4px rgba(255, 107, 0, 0.1);
+}
+
+.btn-register {
+    background: var(--orange-gradient);
+    color: white;
+    border: none;
+    padding: 14px 25px;
+    border-radius: var(--border-radius);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: var(--transition);
+}
+
+.btn-register:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 0, 0.3);
+}
+
+.modal-footer {
+    padding: 15px 25px 25px;
+    text-align: center;
+    border-top: 1px solid var(--gray-200);
+}
+
+.modal-footer p {
+    margin: 0;
+    color: var(--gray-600);
+}
+
+.modal-footer a {
+    color: var(--primary-orange);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.modal-footer a:hover {
+    text-decoration: underline;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
 /* Hero Section */
 .hero-section {
 position: relative;
@@ -1363,6 +1551,16 @@ font-size: 2.2rem;
 .cta-content p {
 font-size: 1.1rem;
 }
+/* Mobile Modal Fixes */
+.modal-content {
+    width: 95%;
+    max-width: none;
+    margin: 2.5% auto;
+    max-height: 95vh;
+}
+.modal-body {
+    max-height: 65vh;
+}
 }
 @media (max-width: 576px) {
 .hero-section {
@@ -1495,5 +1693,50 @@ icon.style.transform = 'rotate(0) scale(1)';
 });
 });
 });
+
+// Modal functions
+function openModal() {
+    document.getElementById('registerModal').style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('registerModal').style.display = 'none';
+}
+
+// Close modal if clicked outside content
+window.onclick = function(event) {
+    const modal = document.getElementById('registerModal');
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Form submission
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    // Add your form submission logic here
+    alert('Registration form submitted!');
+    closeModal();
+});
+
+// Mobile optimization - Adjust modal width
+function adjustModalWidth() {
+    const modalContent = document.querySelector('.modal-content');
+    if (window.innerWidth <= 768) {
+        modalContent.style.width = '95%';
+        modalContent.style.maxWidth = 'none';
+        modalContent.style.margin = '2.5% auto';
+    } else {
+        modalContent.style.width = '90%';
+        modalContent.style.maxWidth = '500px';
+        modalContent.style.margin = '5% auto';
+    }
+}
+
+// Adjust modal width on resize
+window.addEventListener('resize', adjustModalWidth);
+
+// Initial adjustment
+adjustModalWidth();
 </script>
 <?php include 'includes/footer.php'; ?>
